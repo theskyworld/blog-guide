@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// @ts-nocheck
 import { ref, computed } from "vue";
 
 const { messages } = defineProps(["messages"]);

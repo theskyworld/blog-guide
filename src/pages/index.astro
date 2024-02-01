@@ -1,11 +1,11 @@
 ---
-// @ts-nocheck
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Greeting from '../components/Greeting.vue';
-const pageTitle = "Home Page"
+// @ts-ignore
+import Greeting from "../components/Greeting.vue";
+const pageTitle = "Home Page";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
   <h2>My awesome blog subtitle</h2>
-  <Greeting client:load messages={["Hi", "Hello", "Howdy", "Hey there"]}} />
+  <Greeting client:load messages={["Hi", "Hello", "Howdy", "Hey there"]} } />
 </BaseLayout>
