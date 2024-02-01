@@ -1,37 +1,33 @@
 ---
+import { getCollection, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import BlogPost from "../../components/BlogPost.astro";
-import type { MarkdownInstance } from "../../../node_modules/astro/dist/@types/astro";
 
-type Post = MarkdownInstance<Record<string, any>>;
+type Post = CollectionEntry<"posts">;
 
-export async function getStaticPaths(): Promise<unknown> {
-  const allPosts = await Astro.glob("../posts/*.md");
+export async function getStaticPaths() {
+  const allPosts = await getCollection("posts");
+  const uniqueTags = [...new Set(allPosts.map((post:Post) => post.data.tags).flat())];
 
-  return [
-    { params: { tag: "astro" }, props: { posts: allPosts } },
-    { params: { tag: "successes" }, props: { posts: allPosts } },
-    { params: { tag: "community" }, props: { posts: allPosts } },
-    { params: { tag: "blogging" }, props: { posts: allPosts } },
-    { params: { tag: "setbacks" }, props: { posts: allPosts } },
-    { params: { tag: "learning in public" }, props: { posts: allPosts } },
-  ];
+  return uniqueTags.map(tag => {
+    const filteredPosts = allPosts.filter((post:Post) => post.data.tags.includes(tag));
+    return {
+      params: { tag },
+      props: { posts: filteredPosts },
+    };
+  });
 }
 
 const { tag } = Astro.params;
 const { posts } = Astro.props;
-// 返回包含自身标签的帖子
-const filteredPosts = (posts as Post[]).filter((post: Post) =>
-  post.frontmatter.tags?.includes(tag)
-);
 ---
 
 <BaseLayout pageTitle={tag}>
   <p>Posts tagged with {tag}</p>
   <ul>
     {
-      filteredPosts.map((post: Post) => (
-        <BlogPost url={post.url} title={post.frontmatter.title} />
+      posts.map((post:Post) => (
+        <BlogPost url={`/posts/${post.slug}/`} title={post.data.title} />
       ))
     }
   </ul>

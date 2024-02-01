@@ -1,10 +1,14 @@
 ---
 // 博客入口页面(展示所有的博客列表)
+import { getCollection, type CollectionEntry } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BlogPost from "../components/BlogPost.astro";
 
+type Post = CollectionEntry<"blog">;
+
 // 获取./post目录下的所有博客
-const allPosts = await Astro.glob("../pages/posts/*.md");
+// const allPosts = await Astro.glob("../pages/posts/*.md");
+const allPosts = await getCollection("posts");
 const pageTitle = "My Astro Learning Blog";
 ---
 
@@ -12,8 +16,8 @@ const pageTitle = "My Astro Learning Blog";
   <p>This is where I will post about my journey learning Astro.</p>
   <ul>
     {
-      allPosts.map(post => (
-        <BlogPost url={post.url} title={post.frontmatter.title} />
+      allPosts.map((post: Post) => (
+        <BlogPost url={`/posts/${post.slug}/`} title={post.data.title} />
       ))
     }
   </ul>
