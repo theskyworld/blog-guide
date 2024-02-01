@@ -1,0 +1,5 @@
+---
+// 博客入口页面，博客列表中每项博客链接的样式组件
+const { title, url } = Astro.props;
+---
+<li><a href={url}>{title}</a></li>
