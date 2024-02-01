@@ -1,7 +1,11 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import BlogPost from "../../components/BlogPost.astro";
-export async function getStaticPaths() {
+import type { MarkdownInstance } from "../../../node_modules/astro/dist/@types/astro";
+
+type Post = MarkdownInstance<Record<string, any>>;
+
+export async function getStaticPaths(): Promise<unknown> {
   const allPosts = await Astro.glob("../posts/*.md");
 
   return [
@@ -17,7 +21,7 @@ export async function getStaticPaths() {
 const { tag } = Astro.params;
 const { posts } = Astro.props;
 // 返回包含自身标签的帖子
-const filteredPosts = posts.filter(post =>
+const filteredPosts = (posts as Post[]).filter((post: Post) =>
   post.frontmatter.tags?.includes(tag)
 );
 ---
@@ -26,7 +30,7 @@ const filteredPosts = posts.filter(post =>
   <p>Posts tagged with {tag}</p>
   <ul>
     {
-      filteredPosts.map(post => (
+      filteredPosts.map((post: Post) => (
         <BlogPost url={post.url} title={post.frontmatter.title} />
       ))
     }
